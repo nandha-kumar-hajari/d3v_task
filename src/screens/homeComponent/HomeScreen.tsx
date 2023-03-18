@@ -6,6 +6,7 @@ import {
   Image,
   StyleSheet,
   TextInput,
+  Keyboard,
 } from 'react-native';
 import React, {FC, useEffect, useState, useRef} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -144,6 +145,7 @@ const HomeScreen: FC<HomeScreenProps> = ({
     loadMore = true;
     setFooterLoading(true);
     setRefresh(refresh + 1);
+    Keyboard.dismiss()
   };
 
   const onPressSortBy = (item: string) => {
