@@ -1,3 +1,4 @@
 import LoginScreen from './loginComponent/LoginScreen';
-
-export {LoginScreen};
+import SignupScreen from './signupComponent/SignupScreen';
+import HomeScreen from './homeComponent/HomeScreen';
+export {LoginScreen, SignupScreen, HomeScreen};

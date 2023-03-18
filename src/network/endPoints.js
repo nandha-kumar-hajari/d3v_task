@@ -1,5 +1,6 @@
 const endPoints = {
-    LOGIN:"auth/login"
+    LOGIN:"auth/login",
+    SIGNUP:"users/add"
 
 };
 

@@ -27,8 +27,6 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
   //For Manual validation
   const [nameErrorText, setNameErrorText] = useState<string>('');
   const [passwordErrorText, setPasswordErrorText] = useState<string>('');
-  const [isFocussedUserName, setIsFocussedUserName] = useState<boolean>(false);
-  const [isFocussedPassword, setIsFocussedPassword] = useState<boolean>(false);
 
   const onFormValidation = (fieldName: string, isFocus: boolean) => {
     let errorFields = [];
@@ -85,6 +83,7 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
           });
 
           setButtonLoading(false);
+          navigation.replace("HomeScreen")
         })
         .catch(err => {
           console.log('Login Api err', err.response);
@@ -123,11 +122,9 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
           onChangeText={(val: string) => setUserName(val)}
           containerStyle={{marginVertical: RFValue(5)}}
           handleBlur={() => {
-            setIsFocussedUserName(false);
             onFormValidation('name', false);
           }}
           handleFocus={() => {
-            setIsFocussedUserName(true);
             onFormValidation('name', true);
           }}
           error={nameErrorText}
@@ -140,11 +137,9 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
           onChangeText={(val: string) => setPassword(val)}
           containerStyle={{marginVertical: RFValue(5)}}
           handleBlur={() => {
-            setIsFocussedPassword(false);
             onFormValidation('password', false);
           }}
           handleFocus={() => {
-            setIsFocussedPassword(true);
             onFormValidation('password', true);
           }}
           error={passwordErrorText}
