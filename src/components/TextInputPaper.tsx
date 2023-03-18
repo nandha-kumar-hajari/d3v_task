@@ -6,6 +6,7 @@ import COLORS from '../utils/Colors';
 import Fonts from '../utils/Fonts';
 
 interface TextInputPaperProps {
+  testID?:string;
   label: string;
   value: string | undefined;
   onChangeText?: any;
@@ -27,6 +28,7 @@ interface TextInputPaperProps {
 }
 
 const TextInputPaper: React.FC<TextInputPaperProps> = ({
+  testID,
   label,
   value,
   disabled,
@@ -48,6 +50,7 @@ const TextInputPaper: React.FC<TextInputPaperProps> = ({
   return (
     <View style={{marginTop: RFValue(8), ...containerStyle}}>
       <TextInput
+      testID={testID}
         mode={'outlined'}
         label={label}
         value={value}

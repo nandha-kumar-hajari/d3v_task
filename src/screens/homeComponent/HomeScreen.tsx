@@ -27,6 +27,8 @@ import Fonts from '../../utils/Fonts';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {TextInputPaper} from '../../components';
 import SortByModal from '../../components/SortByModal';
+import { Store } from '../../redux';
+
 var loadMore = true;
 interface HomeScreenProps {
   navigation: NativeStackNavigationProp<ParamListBase>;
@@ -36,7 +38,7 @@ const HomeScreen: FC<HomeScreenProps> = ({
   navigation,
   route,
 }: HomeScreenProps) => {
-  const data = useSelector((state: object) => state.appData.userData);
+  const data = Store.getState().appData;
   const flatListRef = useRef();
   const [products, setProducts] = useState<any>([]);
   const limit = 10;
@@ -256,7 +258,6 @@ const HomeScreen: FC<HomeScreenProps> = ({
                   fontFamily: Fonts.Regular,
                   color: Colors.GRAY.DARK,
                   marginTop:RFValue(240)
-               
                 }}>
                 There are no products to display
               </Text>

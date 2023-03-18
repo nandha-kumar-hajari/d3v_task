@@ -12,14 +12,13 @@ import Validation from '../../utils/Validation';
 import Toast from 'react-native-toast-message';
 import {useDispatch} from 'react-redux';
 import * as wpActions from '../../redux/actions';
-
+import {Store} from '../../redux';
 const LottieView = require('lottie-react-native');
 
 interface LoginScreenProps {
   navigation: NativeStackNavigationProp<ParamListBase>;
 }
 const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
-  const dispatch = useDispatch();
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [buttonLoading, setButtonLoading] = useState(false);
@@ -74,8 +73,8 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
         .then(res => {
           console.log('Login Api response', res);
           if (res.data && res.status == 200) {
-            dispatch(wpActions.saveToken(res.data.token));
-            dispatch(wpActions.saveUser(res.data))
+            Store.dispatch(wpActions.saveToken(res.data.token));
+            Store.dispatch(wpActions.saveUser(res.data));
           }
 
           Toast.show({
@@ -84,7 +83,7 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
           });
 
           setButtonLoading(false);
-          navigation.replace("HomeScreen")
+          navigation.navigate('HomeScreen');
         })
         .catch(err => {
           console.log('Login Api err', err.response);
@@ -118,6 +117,7 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
           Please Login to enjoy your services.
         </Text>
         <TextInputPaper
+          testID="username input"
           value={userName}
           label="Username"
           onChangeText={(val: string) => setUserName(val)}
@@ -132,6 +132,7 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
         />
 
         <TextInputPaper
+          testID="password input"
           value={password}
           label="Password"
           secureTextEntry={true}
@@ -146,6 +147,7 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
           error={passwordErrorText}
         />
         <ButtonPaper
+          testID='login button'
           onPress={onPressLogin}
           loading={buttonLoading}
           text="Login"
