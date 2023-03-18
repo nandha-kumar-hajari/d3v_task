@@ -154,10 +154,8 @@ const HomeScreen: FC<HomeScreenProps> = ({
     setScreenLoading(true);
     Webservices.callGetApi(
       searchApplied
-      ? getendPoint.default.SEARCH +
-          `?limit=100&q=${searchText}&skip=0`
-      :
-      getendPoint.default.PRODUCTS + `?limit=${100}&skip=0`,
+        ? getendPoint.default.SEARCH + `?limit=100&q=${searchText}&skip=0`
+        : getendPoint.default.PRODUCTS + `?limit=${100}&skip=0`,
     )
       .then(res => {
         console.log('API response', res);
@@ -251,6 +249,19 @@ const HomeScreen: FC<HomeScreenProps> = ({
           data={products}
           keyExtractor={(item, index) => index.toString()}
           renderItem={renderItem}
+          ListEmptyComponent={() => {
+            return (
+              <Text
+                style={{
+                  fontFamily: Fonts.Regular,
+                  color: Colors.GRAY.DARK,
+                  marginTop:RFValue(240)
+               
+                }}>
+                There are no products to display
+              </Text>
+            );
+          }}
           ItemSeparatorComponent={() => {
             return <View style={Style.dividerStyle} />;
           }}
