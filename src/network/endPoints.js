@@ -1,6 +1,8 @@
 const endPoints = {
     LOGIN:"auth/login",
-    SIGNUP:"users/add"
+    SIGNUP:"users/add",
+    PRODUCTS:"products",
+    SEARCH:"products/search"
 
 };
 

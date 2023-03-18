@@ -75,6 +75,7 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
           console.log('Login Api response', res);
           if (res.data && res.status == 200) {
             dispatch(wpActions.saveToken(res.data.token));
+            dispatch(wpActions.saveUser(res.data))
           }
 
           Toast.show({

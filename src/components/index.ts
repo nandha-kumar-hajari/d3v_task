@@ -1,4 +1,4 @@
 import TextInputPaper from './TextInputPaper';
 import ButtonPaper from './ButtonPaper';
-
-export {TextInputPaper, ButtonPaper};
+import ProductCard from './ProductCard';
+export {TextInputPaper, ButtonPaper,ProductCard};
