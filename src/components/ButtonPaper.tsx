@@ -14,6 +14,7 @@ interface ButtonPaperProps {
   loading?: boolean;
   onPress?: () => void;
   buttonStyle?: ViewStyle;
+  disabled?:boolean
 }
 
 const ButtonPaper: React.FC<ButtonPaperProps> = ({
@@ -24,12 +25,14 @@ const ButtonPaper: React.FC<ButtonPaperProps> = ({
   containerViewStyle,
   buttonStyle,
   onPress,
+  disabled
 }: ButtonPaperProps) => {
   return (
     <View style={{margin: RFValue(5), ...containerViewStyle}}>
       <Button
         icon={icon}
         loading={loading}
+        disabled={disabled}
         mode="contained"
         style={{
           borderRadius: 4,

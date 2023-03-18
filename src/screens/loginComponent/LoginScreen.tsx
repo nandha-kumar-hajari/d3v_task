@@ -8,6 +8,10 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import * as Webservices from '../../network/Webservices';
 import * as getendPoint from '../../network/endPoints';
+import Validation from '../../utils/Validation';
+import Toast from 'react-native-toast-message';
+import {useDispatch} from 'react-redux';
+import * as wpActions from '../../redux/actions';
 
 const LottieView = require('lottie-react-native');
 
@@ -15,30 +19,87 @@ interface LoginScreenProps {
   navigation: NativeStackNavigationProp<ParamListBase>;
 }
 const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
+  const dispatch = useDispatch();
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [buttonLoading, setButtonLoading] = useState(false);
 
+  //For Manual validation
+  const [nameErrorText, setNameErrorText] = useState<string>('');
+  const [passwordErrorText, setPasswordErrorText] = useState<string>('');
+  const [isFocussedUserName, setIsFocussedUserName] = useState<boolean>(false);
+  const [isFocussedPassword, setIsFocussedPassword] = useState<boolean>(false);
+
+  const onFormValidation = (fieldName: string, isFocus: boolean) => {
+    let errorFields = [];
+
+    if (fieldName === '' || fieldName === 'name') {
+      if (!isFocus) {
+        if (!userName || userName == '' || !Validation.isValidName(userName)) {
+          setNameErrorText('Enter Valid Name');
+          errorFields.push('name');
+        }
+      } else {
+        setNameErrorText('');
+      }
+    }
+
+    if (fieldName === '' || fieldName === 'password') {
+      if (!isFocus) {
+        if (
+          !password ||
+          password == '' ||
+          !Validation.isValidPassword(password)
+        ) {
+          setPasswordErrorText('Enter Valid Password');
+          errorFields.push('password');
+        }
+      } else {
+        setPasswordErrorText('');
+      }
+    }
+
+    return !(errorFields.length > 0);
+  };
+
   const onPressLogin = () => {
-    setButtonLoading(true);
-    Webservices.callPostApi(
-      getendPoint.default.LOGIN,
-      {
-        username: userName,
-        password: password,
-      },
-      '',
-    )
-      .then(res => {
-        setButtonLoading(false);
+    if (onFormValidation('', false)) {
+      setButtonLoading(true);
+      Webservices.callPostApi(
+        getendPoint.default.LOGIN,
+        {
+          username: userName,
+          password: password,
+        },
+        '',
+      )
+        .then(res => {
+          console.log('Login Api response', res);
+          if (res.data && res.status == 200) {
+            dispatch(wpActions.saveToken(res.data.token));
+          }
 
-        console.log('Login Api response', res);
-      })
-      .catch(err => {
-        console.log('Login Api err', err);
-        setButtonLoading(false);
+          Toast.show({
+            type: 'success',
+            text1: 'Logged in successfully!',
+          });
 
-      });
+          setButtonLoading(false);
+        })
+        .catch(err => {
+          console.log('Login Api err', err.response);
+          let response = err.response;
+          if (response.data?.message) {
+            Toast.show({
+              type: 'error',
+              text1: response.data.message
+                ? response.data.message
+                : 'Some error occured',
+            });
+          }
+          setButtonLoading(false);
+        });
+    }
   };
   return (
     <SafeAreaView style={Style.container}>
@@ -61,6 +122,15 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
           label="Username"
           onChangeText={(val: string) => setUserName(val)}
           containerStyle={{marginVertical: RFValue(5)}}
+          handleBlur={() => {
+            setIsFocussedUserName(false);
+            onFormValidation('name', false);
+          }}
+          handleFocus={() => {
+            setIsFocussedUserName(true);
+            onFormValidation('name', true);
+          }}
+          error={nameErrorText}
         />
 
         <TextInputPaper
@@ -69,6 +139,15 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
           secureTextEntry={true}
           onChangeText={(val: string) => setPassword(val)}
           containerStyle={{marginVertical: RFValue(5)}}
+          handleBlur={() => {
+            setIsFocussedPassword(false);
+            onFormValidation('password', false);
+          }}
+          handleFocus={() => {
+            setIsFocussedPassword(true);
+            onFormValidation('password', true);
+          }}
+          error={passwordErrorText}
         />
         <ButtonPaper
           onPress={onPressLogin}

@@ -22,6 +22,8 @@ interface TextInputPaperProps {
   textInputStyle?: any;
   outlineStyle?: any;
   secureTextEntry?: any;
+  handleBlur?: () => void;
+  handleFocus?: () => void;
 }
 
 const TextInputPaper: React.FC<TextInputPaperProps> = ({
@@ -40,6 +42,8 @@ const TextInputPaper: React.FC<TextInputPaperProps> = ({
   textInputStyle,
   outlineStyle,
   secureTextEntry,
+  handleBlur,
+  handleFocus,
 }: TextInputPaperProps) => {
   return (
     <View style={{marginTop: RFValue(8), ...containerStyle}}>
@@ -47,6 +51,8 @@ const TextInputPaper: React.FC<TextInputPaperProps> = ({
         mode={'outlined'}
         label={label}
         value={value}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
         onChangeText={onChangeText}
         disabled={disabled}
         left={left}
