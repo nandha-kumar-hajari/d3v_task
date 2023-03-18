@@ -39,7 +39,6 @@ const HomeScreen: FC<HomeScreenProps> = ({
   const data = useSelector((state: object) => state.appData.userData);
   const flatListRef = useRef();
   const [products, setProducts] = useState<any>([]);
-  const [skip, setSkip] = useState(0);
   const limit = 10;
   const [screenLoading, setScreenLoading] = useState(false);
   const [footerLoading, setFooterLoading] = useState(true);
@@ -116,11 +115,14 @@ const HomeScreen: FC<HomeScreenProps> = ({
   };
 
   const onPressSearch = () => {
+    limit;
     if (searchText) {
       setScreenLoading(true);
       loadMore = true;
       setSearchApplied(true);
-      Webservices.callGetApi(getendPoint.default.SEARCH + `?limit=${limit}&q=${searchText}`)
+      Webservices.callGetApi(
+        getendPoint.default.SEARCH + `?limit=${limit}&q=${searchText}`,
+      )
         .then(res => {
           console.log('API response', res);
           if (res.status == 200 && res.data.products) {
@@ -145,19 +147,45 @@ const HomeScreen: FC<HomeScreenProps> = ({
     loadMore = true;
     setFooterLoading(true);
     setRefresh(refresh + 1);
-    Keyboard.dismiss()
+    Keyboard.dismiss();
   };
 
   const onPressSortBy = (item: string) => {
-    if (item == 'Price') {
-      setProducts(
-        products.sort((a, b) => parseFloat(a.price) - parseFloat(b.price)),
-      );
-    }
+    setScreenLoading(true);
+    Webservices.callGetApi(
+      searchApplied
+      ? getendPoint.default.SEARCH +
+          `?limit=100&q=${searchText}&skip=0`
+      :
+      getendPoint.default.PRODUCTS + `?limit=${100}&skip=0`,
+    )
+      .then(res => {
+        console.log('API response', res);
+        if (res.status == 200 && res.data.products) {
+          // setProducts(res.data.products);
 
-    if (item == 'Name') {
-      setProducts(products.sort((a, b) => a.title.localeCompare(b.title)));
-    }
+          if (item == 'Price') {
+            setProducts(
+              res.data.products.sort(
+                (a, b) => parseFloat(a.price) - parseFloat(b.price),
+              ),
+            );
+          }
+
+          if (item == 'Name') {
+            setProducts(
+              res.data.products.sort((a, b) => a.title.localeCompare(b.title)),
+            );
+          }
+        }
+
+        setScreenLoading(false);
+      })
+      .catch(err => {
+        console.log('API error', err);
+        setScreenLoading(false);
+      });
+
     setSortByModalVisible(false);
     flatListRef &&
       flatListRef.current?.scrollToOffset({animated: true, offset: 0});
