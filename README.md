@@ -20,6 +20,7 @@
 | FastImage | [https://github.com/DylanVann/react-native-fast-image] |
 | Vector Icons | [https://github.com/oblador/react-native-vector-icons] |
 | Paper | [https://callstack.github.io/react-native-paper/] |
+| Axios | [https://axios-http.com/] |
 
 ## Working flow
 - First when the app is opened, we ask the user to login.
