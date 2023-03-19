@@ -24,6 +24,7 @@
 ## Working flow
 - First when the app is opened, we ask the user to login.
 - If the user has an account, he can login, if not he can choose to Signup
+- As dummyjson api was used, you will be able to signup using any credentials, but only login using limited ones
 - For now you can use these dummy credentials to login to the app:
    username: "kminchelle"
    password: "0lelplR"
