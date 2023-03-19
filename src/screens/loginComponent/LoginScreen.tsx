@@ -27,11 +27,15 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
   const [nameErrorText, setNameErrorText] = useState<string>('');
   const [passwordErrorText, setPasswordErrorText] = useState<string>('');
 
+  //Here we implement the validation logic.
+  //This will be triggered based on input fields focus and blur states
   const onFormValidation = (fieldName: string, isFocus: boolean) => {
     let errorFields = [];
 
+    //Validation messgae for username will be set to the state when user removes focus from inpit
     if (fieldName === '' || fieldName === 'name') {
       if (!isFocus) {
+        // Validating username and it should only be allowing characters
         if (!userName || userName == '' || !Validation.isValidName(userName)) {
           setNameErrorText('Enter Valid Name');
           errorFields.push('name');
@@ -40,9 +44,11 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
         setNameErrorText('');
       }
     }
-
+    //Validation messgae for password will be set to the state when user removes focus from inpit
     if (fieldName === '' || fieldName === 'password') {
       if (!isFocus) {
+        // Validating password and it will allow characters and numbers not special symbols
+
         if (
           !password ||
           password == '' ||
@@ -59,6 +65,8 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
     return !(errorFields.length > 0);
   };
 
+  //Once the user clicks submit button, we verify if the fields are valid or not.
+  //Only if they are valid we make api to login api
   const onPressLogin = () => {
     if (onFormValidation('', false)) {
       setButtonLoading(true);
@@ -71,7 +79,8 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
         '',
       )
         .then(res => {
-          console.log('Login Api response', res);
+          //If the response from the API is success, we store the token and userinfo in redux
+          //After that we navigate the user to homescreen
           if (res.data && res.status == 200) {
             Store.dispatch(wpActions.saveToken(res.data.token));
             Store.dispatch(wpActions.saveUser(res.data));
@@ -86,7 +95,6 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
           navigation.replace('HomeScreen');
         })
         .catch(err => {
-          console.log('Login Api err', err.response);
           let response = err.response;
           if (response.data?.message) {
             Toast.show({
@@ -105,6 +113,7 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
       <KeyboardAwareScrollView
         contentContainerStyle={Style.scrollContainer}
         showsVerticalScrollIndicator={false}>
+        {/* Used lottieview for high quality and small sized animations unlike traditional gifs */}
         <LottieView
           source={require('../../assets/animations/verify.json')}
           style={Style.animationStyle}
@@ -116,6 +125,8 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
         <Text style={Style.subTitleStyle}>
           Please Login to enjoy your services.
         </Text>
+        {/* Username input */}
+
         <TextInputPaper
           testID="username input"
           value={userName}
@@ -131,6 +142,7 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
           error={nameErrorText}
         />
 
+        {/* Password input */}
         <TextInputPaper
           testID="password input"
           value={password}
@@ -147,15 +159,15 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
           error={passwordErrorText}
         />
         <ButtonPaper
-          testID='login button'
+          testID="login button"
           onPress={onPressLogin}
           loading={buttonLoading}
           text="Login"
           containerViewStyle={{marginVertical: RFValue(15)}}
         />
 
+        {/* If the user doesnt have an account, we ask them to signup */}
         <Text style={Style.signupTextStyle}>Don't have an account yet?</Text>
-
         <Text
           onPress={() => navigation.navigate('SignupScreen')}
           style={Style.SignupClickTextStyle}>

@@ -27,6 +27,7 @@ const SignupScreen: FC<SignupScreenProps> = ({
   const [nameErrorText, setNameErrorText] = useState<string>('');
   const [passwordErrorText, setPasswordErrorText] = useState<string>('');
 
+  //Triggering Validation based on input fields onBlur and Focus states
   const onFormValidation = (fieldName: string, isFocus: boolean) => {
     let errorFields = [];
 
@@ -59,6 +60,7 @@ const SignupScreen: FC<SignupScreenProps> = ({
     return !(errorFields.length > 0);
   };
 
+  //Checking validation status, only if the fields are valid, we trigger the signup api
   const onPressSignup = () => {
     if (onFormValidation('', false)) {
       setButtonLoading(true);
@@ -102,6 +104,7 @@ const SignupScreen: FC<SignupScreenProps> = ({
       <KeyboardAwareScrollView
         contentContainerStyle={Style.scrollContainer}
         showsVerticalScrollIndicator={false}>
+          {/* Lottieview for animations */}
         <LottieView
           source={require('../../assets/animations/welcome.json')}
           style={Style.animationStyle}

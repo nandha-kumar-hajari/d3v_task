@@ -1,9 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
 import FastImage from 'react-native-fast-image';
 import {RFValue} from 'react-native-responsive-fontsize';
@@ -23,6 +18,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <TouchableOpacity disabled onPress={onPress} style={styles.cardViewStyle}>
       <View style={{flexDirection: 'row'}}>
+        {/* FastImage library is used to cache the images locally and not hit the api
+        until the image urls are modified, we reduce the load on the server and improve UX by speeding up image load time
+        */}
         <FastImage
           source={{
             uri: itemData.thumbnail,
@@ -32,6 +30,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           onLoadEnd={() => setImageLoading(false)}
           style={styles.imgStyle}
           resizeMode="contain">
+          {/* Lazy loading the images, here, until the image is loaded, we show loading indicator */}
           {imageLoading ? (
             <View style={{flex: 1, backgroundColor: '#f2f2f2'}}>
               <ActivityIndicator

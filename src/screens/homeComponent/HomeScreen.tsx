@@ -28,9 +28,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {TextInputPaper} from '../../components';
 import SortByModal from '../../components/SortByModal';
 import {Store} from '../../redux';
-import { saveToken, saveUser } from '../../redux/actions';
-import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import {saveToken, saveUser} from '../../redux/actions';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
 
+//We use this to restrict us from hitting pagination when we reach end of the list
 var loadMore = true;
 interface HomeScreenProps {
   navigation: NativeStackNavigationProp<ParamListBase>;
@@ -40,7 +41,8 @@ const HomeScreen: FC<HomeScreenProps> = ({
   navigation,
   route,
 }: HomeScreenProps) => {
-  const data = Store.getState().appData;
+  const data = Store.getState().appData.userData;
+
   const flatListRef = useRef();
   const [products, setProducts] = useState<any>([]);
   const limit = 10;
@@ -51,13 +53,16 @@ const HomeScreen: FC<HomeScreenProps> = ({
   const [searchApplied, setSearchApplied] = useState(false);
   const [refresh, setRefresh] = useState(0);
 
-  console.log('Data from redux', data);
+  //Fetching products with constant limit of 10 and no products are skipped as
+  //This will be first api call
   const fetchProducts = () => {
     Webservices.callGetApi(
       getendPoint.default.PRODUCTS + `?limit=${limit}&skip=0`,
     )
       .then(res => {
-        console.log('API response', res);
+        //If the api response is success,
+        //We set the products in the state and stop the screen loading
+
         if (res.status == 200 && res.data.products) {
           setProducts(res.data.products);
         }
@@ -65,13 +70,18 @@ const HomeScreen: FC<HomeScreenProps> = ({
         setScreenLoading(false);
       })
       .catch(err => {
-        console.log('API error', err);
+        //Even if the api error occurs, we stop the screen loading
         setScreenLoading(false);
       });
   };
 
+  //Here we implement the pagination logic
   const fetchMoreProducts = () => {
+    //We start showing the footer loading component intially
     setFooterLoading(true);
+    //We use this same get method to see if the pagination will hit search API
+    //If the search state is false, we hit the normal product listing api
+    //We skip the number of products, that we already have in state and request for next 10 products
     Webservices.callGetApi(
       searchApplied
         ? getendPoint.default.SEARCH +
@@ -80,24 +90,25 @@ const HomeScreen: FC<HomeScreenProps> = ({
             `?limit=${limit}&skip=${products.length}`,
     )
       .then(res => {
-        console.log('API response', res);
         if (res.status == 200) {
           if (res.data.products) {
             setProducts([...products, ...res.data.products]);
           }
           if (res.data.products == 0) {
+            //We hit the api with next skip value, once we know that
+            //There no products in array of products from API is empty,we stop requesting the products
             loadMore = false;
           }
         }
         setFooterLoading(false);
       })
       .catch(err => {
-        console.log('API error', err);
         loadMore = false;
         setFooterLoading(false);
       });
   };
   const onEndReached = () => {
+    //Making sure that fetch more products is not called when we reached end of the list
     if (loadMore) {
       fetchMoreProducts();
     }
@@ -107,15 +118,15 @@ const HomeScreen: FC<HomeScreenProps> = ({
     setScreenLoading(true);
     fetchProducts();
   }, [refresh]);
-  const onPressLogout =() =>{
-    Store.dispatch(saveToken(''))
-    Store.dispatch(saveUser(''))
+  const onPressLogout = () => {
+    Store.dispatch(saveToken(''));
+    Store.dispatch(saveUser(''));
     Toast.show({
-      type:'success',
-      text1:'Logged out successfully!'})
-    navigation.replace("LoginScreen")
-
-  }
+      type: 'success',
+      text1: 'Logged out successfully!',
+    });
+    navigation.replace('LoginScreen');
+  };
   const renderFooterLoading = () => {
     return (
       <View style={{alignItems: 'center', marginVertical: RFValue(10)}}>
@@ -127,16 +138,16 @@ const HomeScreen: FC<HomeScreenProps> = ({
   };
 
   const onPressSearch = () => {
-    limit;
+    //Search will only happen if the user enters something in search text field
     if (searchText) {
       setScreenLoading(true);
+      //We re-enable the pagination,when the search query is sent
       loadMore = true;
       setSearchApplied(true);
       Webservices.callGetApi(
         getendPoint.default.SEARCH + `?limit=${limit}&q=${searchText}`,
       )
         .then(res => {
-          console.log('API response', res);
           if (res.status == 200 && res.data.products) {
             setProducts(res.data.products);
           }
@@ -144,10 +155,9 @@ const HomeScreen: FC<HomeScreenProps> = ({
           setScreenLoading(false);
         })
         .catch(err => {
-          console.log('API error', err);
           setScreenLoading(false);
         });
-
+      //After the search query is sent, we scrollback to the top of the flatlist
       flatListRef &&
         flatListRef.current?.scrollToOffset({animated: true, offset: 0});
     }
@@ -164,16 +174,18 @@ const HomeScreen: FC<HomeScreenProps> = ({
 
   const onPressSortBy = (item: string) => {
     setScreenLoading(true);
+    //This sort is like any other sort, but the only caveat is that
+    //We fetch all the products at once here, becase sort was only happening from frontend
+    //We cannot sort all the products unless we have all of them in our state
     Webservices.callGetApi(
       searchApplied
         ? getendPoint.default.SEARCH + `?limit=100&q=${searchText}&skip=0`
         : getendPoint.default.PRODUCTS + `?limit=${100}&skip=0`,
     )
       .then(res => {
-        console.log('API response', res);
-        if (res.status == 200 && res.data.products) {
-          // setProducts(res.data.products);
 
+        if (res.status == 200 && res.data.products) {
+          //Based on the sort type selected by user, we sort the items and change the state
           if (item == 'Price') {
             setProducts(
               res.data.products.sort(
@@ -192,11 +204,11 @@ const HomeScreen: FC<HomeScreenProps> = ({
         setScreenLoading(false);
       })
       .catch(err => {
-        console.log('API error', err);
         setScreenLoading(false);
       });
 
     setSortByModalVisible(false);
+    //Again we scrollback to top of the flatlist when user changes sort value
     flatListRef &&
       flatListRef.current?.scrollToOffset({animated: true, offset: 0});
   };
@@ -222,7 +234,7 @@ const HomeScreen: FC<HomeScreenProps> = ({
           position: 'absolute',
           right: 0,
           top: 30,
-          backgroundColor:"transparent"
+          backgroundColor: 'transparent',
         }}>
         <Icon name={'logout'} size={22} color={Colors.BASECOLOR} />
       </TouchableOpacity>
