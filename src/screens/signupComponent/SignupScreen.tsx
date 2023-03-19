@@ -155,7 +155,7 @@ const SignupScreen: FC<SignupScreenProps> = ({
         />
 
         <Text style={Style.signupTextStyle}>Already have an account?</Text>
-        <Text style={Style.SignupClickTextStyle}>{'<'} Back to Login </Text>
+        <Text onPress={()=>navigation.goBack()} style={Style.SignupClickTextStyle}>{'<'} Back to Login </Text>
       </KeyboardAwareScrollView>
     </SafeAreaView>
   );
