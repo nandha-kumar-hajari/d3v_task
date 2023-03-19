@@ -8,8 +8,7 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Validation from '../../utils/Validation';
 import Toast from 'react-native-toast-message';
-import {useDispatch} from 'react-redux';
-import * as wpActions from '../../redux/actions';
+
 import * as Webservices from '../../network/Webservices';
 import * as getendPoint from '../../network/endPoints';
 const LottieView = require('lottie-react-native');
@@ -20,7 +19,6 @@ interface SignupScreenProps {
 const SignupScreen: FC<SignupScreenProps> = ({
   navigation,
 }: SignupScreenProps) => {
-  const dispatch = useDispatch();
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [buttonLoading, setButtonLoading] = useState(false);
@@ -80,7 +78,7 @@ const SignupScreen: FC<SignupScreenProps> = ({
             text1: 'Signup successful!',
             text2: 'Please login to continue using the app',
           });
-          navigation.goBack()
+          navigation.goBack();
           setButtonLoading(false);
         })
         .catch(err => {
@@ -116,6 +114,7 @@ const SignupScreen: FC<SignupScreenProps> = ({
           Please Signup to make most out of this app.
         </Text>
         <TextInputPaper
+          testID="username input"
           value={userName}
           label="Username"
           onChangeText={(val: string) => setUserName(val)}
@@ -130,6 +129,7 @@ const SignupScreen: FC<SignupScreenProps> = ({
         />
 
         <TextInputPaper
+          testID="password input"
           value={password}
           label="Password"
           secureTextEntry={true}
@@ -144,6 +144,7 @@ const SignupScreen: FC<SignupScreenProps> = ({
           error={passwordErrorText}
         />
         <ButtonPaper
+          testID="signup button"
           onPress={onPressSignup}
           loading={buttonLoading}
           text="Signup"

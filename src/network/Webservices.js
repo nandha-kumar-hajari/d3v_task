@@ -1,9 +1,10 @@
-import axios from '../network/axios-config';
+import axiosInstance from './axios-config';
+
 import * as constants from '../utils/Constants';
 
 
 export const callPostApi = (endPoint, data, token) => {
-    return axios.post(endPoint, data, {
+    return axiosInstance.post(endPoint, data, {
         headers: {
             'api-version': constants.API_VERSION,
             'Authorization': 'Bearer ' + token,
@@ -12,7 +13,7 @@ export const callPostApi = (endPoint, data, token) => {
 }
 
 export const callGetApi = (endPoint, token) => {
-    return axios.get(endPoint, {
+    return axiosInstance.get(endPoint, {
         headers: {
             'api-version': constants.API_VERSION,
             'Authorization': 'Bearer ' + token,

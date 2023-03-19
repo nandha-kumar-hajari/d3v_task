@@ -27,7 +27,9 @@ import Fonts from '../../utils/Fonts';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {TextInputPaper} from '../../components';
 import SortByModal from '../../components/SortByModal';
-import { Store } from '../../redux';
+import {Store} from '../../redux';
+import { saveToken, saveUser } from '../../redux/actions';
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 var loadMore = true;
 interface HomeScreenProps {
@@ -105,7 +107,15 @@ const HomeScreen: FC<HomeScreenProps> = ({
     setScreenLoading(true);
     fetchProducts();
   }, [refresh]);
+  const onPressLogout =() =>{
+    Store.dispatch(saveToken(''))
+    Store.dispatch(saveUser(''))
+    Toast.show({
+      type:'success',
+      text1:'Logged out successfully!'})
+    navigation.replace("LoginScreen")
 
+  }
   const renderFooterLoading = () => {
     return (
       <View style={{alignItems: 'center', marginVertical: RFValue(10)}}>
@@ -205,6 +215,17 @@ const HomeScreen: FC<HomeScreenProps> = ({
           <Text style={Style.subTitleStyle}>Browse Available Products</Text>
         </View>
       </View>
+      <TouchableOpacity
+        onPress={onPressLogout}
+        style={{
+          ...Style.searchButtonStyle,
+          position: 'absolute',
+          right: 0,
+          top: 30,
+          backgroundColor:"transparent"
+        }}>
+        <Icon name={'logout'} size={22} color={Colors.BASECOLOR} />
+      </TouchableOpacity>
 
       <View
         style={{
@@ -257,7 +278,7 @@ const HomeScreen: FC<HomeScreenProps> = ({
                 style={{
                   fontFamily: Fonts.Regular,
                   color: Colors.GRAY.DARK,
-                  marginTop:RFValue(240)
+                  marginTop: RFValue(240),
                 }}>
                 There are no products to display
               </Text>

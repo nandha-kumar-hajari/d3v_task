@@ -10,9 +10,9 @@ import * as Webservices from '../../network/Webservices';
 import * as getendPoint from '../../network/endPoints';
 import Validation from '../../utils/Validation';
 import Toast from 'react-native-toast-message';
-import {useDispatch} from 'react-redux';
 import * as wpActions from '../../redux/actions';
 import {Store} from '../../redux';
+
 const LottieView = require('lottie-react-native');
 
 interface LoginScreenProps {
@@ -83,7 +83,7 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}: LoginScreenProps) => {
           });
 
           setButtonLoading(false);
-          navigation.navigate('HomeScreen');
+          navigation.replace('HomeScreen');
         })
         .catch(err => {
           console.log('Login Api err', err.response);
