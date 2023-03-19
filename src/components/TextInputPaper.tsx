@@ -69,13 +69,13 @@ const TextInputPaper: React.FC<TextInputPaperProps> = ({
         style={{
           fontFamily: Fonts.Regular,
           fontSize: RFValue(12),
-          color: error ? COLORS.RED : COLORS.BaseColor,
+          color: error ? COLORS.RED : COLORS.BASECOLOR,
           width: RFValue(320),
           height: !multiline && RFValue(38),
           padding: 0,
           ...textInputStyle,
         }}
-        placeholderTextColor={COLORS.BaseColor}
+        placeholderTextColor={COLORS.BASECOLOR}
         theme={{
           fonts: {
             regular: {
@@ -83,7 +83,7 @@ const TextInputPaper: React.FC<TextInputPaperProps> = ({
             },
           },
           colors: {
-            primary: error ? COLORS.RED : COLORS.BaseColor,
+            primary: error ? COLORS.RED : COLORS.BASECOLOR,
             background: '#fff',
             text: '#000',
             placeholder: '#000',
@@ -91,7 +91,7 @@ const TextInputPaper: React.FC<TextInputPaperProps> = ({
           },
         }}
         outlineStyle={{
-          borderColor: error ? COLORS.RED : COLORS.BaseColor,
+          borderColor: error ? COLORS.RED : COLORS.BASECOLOR,
           borderWidth: 0.5,
           ...outlineStyle,
         }}
