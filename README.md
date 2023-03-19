@@ -17,7 +17,6 @@
 | ------ | ------ |
 | Lottie | [https://www.npmjs.com/package/lottie-react-native] |
 | FastImage | [https://github.com/DylanVann/react-native-fast-image] |
-| FastImage | [https://github.com/DylanVann/react-native-fast-image] |
 | Vector Icons | [https://github.com/oblador/react-native-vector-icons] |
 | Paper | [https://callstack.github.io/react-native-paper/] |
 | Axios | [https://axios-http.com/] |
