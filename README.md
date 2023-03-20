@@ -49,6 +49,8 @@ project
 │   package.json
 └───src
 │   │   __mocks__
+│   └───redux
+│   └───network
 │   └───assets
 │       │   animations
 │       │   fonts
@@ -59,7 +61,6 @@ project
 │       │   homescreeencomponent
 │       │   loginscreencomponent
 │       │   signupscreencomponent
-
 ```
 
 
